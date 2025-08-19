@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting &mdash; AUTOHIAM 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            AUTOHIAM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#system-calibration">System Calibration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-robot">Starting the Robot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-camera">Starting the Camera</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calibrating-the-robot-goal-positions">Calibrating the Robot Goal Positions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AUTOHIAM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<p>This section provides an example workflow using <a class="reference external" href="https://global.agilex.ai/products/piper">PiPER (AgileX Robotics)</a>.</p>
+<section id="system-calibration">
+<span id="id1"></span><h2>System Calibration<a class="headerlink" href="#system-calibration" title="Link to this heading"></a></h2>
+<p>Currently, there is an unresolved issue with the PiPER hardware.
+If the robot remains disconnected for an extended period, it may accumulate a small positional drift (~millimeters).
+This can cause inaccuracies in experiments that require high-precision manipulation.</p>
+<p>To recalibrate the RoboChemist system (e.g., AUTOHIAM), follow the steps below.</p>
+<section id="starting-the-robot">
+<h3>Starting the Robot<a class="headerlink" href="#starting-the-robot" title="Link to this heading"></a></h3>
+<p>To start the robot:</p>
+<ol class="arabic">
+<li><p><strong>Enable the Bash environment</strong></p>
+<p>Open a new terminal and source the PiPER workspace:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/piper_ros_ws<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">source</span><span class="w"> </span>install/setup.bash
+</pre></div>
+</div>
+</li>
+<li><p><strong>Activate the CAN interface</strong></p>
+<p>Run the following script to bring up the CAN bus:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/piper_ros_ws/src/piper_ros<span class="w"> </span><span class="o">&amp;&amp;</span>
+bash<span class="w"> </span>can_activate.sh<span class="w"> </span>can0<span class="w"> </span><span class="m">1000000</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Launch the enable node</strong></p>
+<p>Run the node to power on and enable the robot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>launch<span class="w"> </span>piper<span class="w"> </span>start_single_piper.launch.py<span class="w"> </span>gripper_val_mutiple:<span class="o">=</span><span class="m">2</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Start the ROS 2 system</strong></p>
+<p>In a separate terminal, launch the ROS 2 stack for the robot:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/piper_ros_ws<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>launch<span class="w"> </span>piper_with_gripper_moveit<span class="w"> </span>demo.launch.py
+</pre></div>
+</div>
+</li>
+<li><p><strong>Start the curobo collision-free motion planner</strong></p>
+<p>In a new terminal, source the python virtual environment and run the cumotion service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>cumotion
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="starting-the-camera">
+<h3>Starting the Camera<a class="headerlink" href="#starting-the-camera" title="Link to this heading"></a></h3>
+<p>To start the camera, first run the node to power on the camera ROS 2 stack:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ros2<span class="w"> </span>run<span class="w"> </span>realsense2_camera<span class="w"> </span>realsense2_camera_node<span class="w">   </span>--ros-args<span class="w">   </span>-p<span class="w"> </span>enable_color:<span class="o">=</span><span class="nb">true</span><span class="w">   </span>-p<span class="w"> </span>rgb_camera.color_profile:<span class="o">=</span>1920x1080x30
+</pre></div>
+</div>
+</div></blockquote>
+<p>Then in a seperate terminal, launch the ROS 2 node for marker detection:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/handeye_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>marker_detection<span class="w"> </span>gripper_estimate_marker_pose
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="calibrating-the-robot-goal-positions">
+<h3>Calibrating the Robot Goal Positions<a class="headerlink" href="#calibrating-the-robot-goal-positions" title="Link to this heading"></a></h3>
+<p>To calibrate the goal positions (e.g., for precipitation, washing, and drying), manually control the robot to pick up the sample container.
+Move it to each goal position and adjust the X and Y parameters.
+The goal is to center the container within the beaker and ensure it can move straight up and down without colliding with the beaker walls.</p>
+<ol class="arabic">
+<li><p><strong>Position the camera to verify the container</strong></p>
+<p>In a new terminal,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>start_pose
+</pre></div>
+</div>
+</li>
+<li><p><strong>Open the gripper</strong></p>
+<p>In a new terminal,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>open_gripper
+</pre></div>
+</div>
+</li>
+<li><p><strong>Pick up the container</strong></p>
+<p>In a new terminal,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>pickup
+</pre></div>
+</div>
+</li>
+<li><p><strong>Move up the container</strong></p>
+<p>In a new terminal,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>cartesian_control_moveit<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>z_offset:<span class="o">=</span><span class="m">0</span>.15
+</pre></div>
+</div>
+</li>
+<li><p><strong>Calibrate the precipitation position</strong></p>
+<p>In a new terminal, run the following command and adjust the parameters <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">x:=0.375</span> <span class="pre">-p</span> <span class="pre">y:=0.180</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>moveto<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>x:<span class="o">=</span><span class="m">0</span>.375<span class="w"> </span>-p<span class="w"> </span>y:<span class="o">=</span><span class="m">0</span>.180
+</pre></div>
+</div>
+</li>
+<li><p><strong>Calibrate the washing position</strong></p>
+<p>In a new terminal, run the following command and adjust the parameters <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">x:=0.375</span> <span class="pre">-p</span> <span class="pre">y:=0.075</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>moveto<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>x:<span class="o">=</span><span class="m">0</span>.375<span class="w"> </span>-p<span class="w"> </span>y:<span class="o">=</span><span class="m">0</span>.075
+</pre></div>
+</div>
+</li>
+<li><p><strong>Calibrate the drying position</strong></p>
+<p>In a new terminal, run the following command and adjust the parameters <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">x:=0.488</span> <span class="pre">-p</span> <span class="pre">y:=0.080</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>moveto<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>x:<span class="o">=</span><span class="m">0</span>.488<span class="w"> </span>-p<span class="w"> </span>y:<span class="o">=</span><span class="m">0</span>.080
+</pre></div>
+</div>
+</li>
+<li><p><strong>Calibrate the drying infusion position</strong></p>
+<p>In a new terminal, run the following command and adjust the parameters <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">x:=0.253</span> <span class="pre">-p</span> <span class="pre">y:=-0.143</span> <span class="pre">-p</span> <span class="pre">z:=0.280</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>~/directory_env/curobo_env/bin/activate<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="nb">cd</span><span class="w"> </span>~/autohiam_ws<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>install/setup.bash<span class="w"> </span><span class="o">&amp;&amp;</span>
+ros2<span class="w"> </span>run<span class="w"> </span>hiam_gen2<span class="w"> </span>moveto<span class="w"> </span>--ros-args<span class="w"> </span>-p<span class="w"> </span>x:<span class="o">=</span><span class="m">0</span>.253<span class="w"> </span>-p<span class="w"> </span>y:<span class="o">=</span>-0.143<span class="w"> </span>-p<span class="w"> </span>z:<span class="o">=</span><span class="m">0</span>.280
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, shengyangzhuang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
